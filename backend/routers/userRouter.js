@@ -27,6 +27,7 @@ userRouter.post(
           name: user.name,
           email: user.email,
           isAdmin: user.isAdmin,
+          isSeller: user.isSeller,
           token: generateToken(user),
         });
         return;
@@ -50,6 +51,7 @@ userRouter.post(
       name: createdUser.name,
       email: createdUser.email,
       isAdmin: createdUser.isAdmin,
+      isSeller: createdUser.isSeller,
       token: generateToken(createdUser),
     });
   })
@@ -77,12 +79,18 @@ userRouter.put(
       if (req.body.password) {
         user.password = bcrypt.hashSync(req.body.password, 8);
       }
+      if (user.isSeller) {
+        user.seller.name = req.body.sellerName;
+        user.seller.logo = req.body.sellerLogo;
+        user.seller.description = req.body.sellerDescription;
+      }
       const updatedUser = await user.save();
       res.send({
         _id: updatedUser._id,
         name: updatedUser.name,
         email: updatedUser.email,
         isAdmin: updatedUser.isAdmin,
+        isSeller: updatedUser.isSeller,
         token: generateToken(updatedUser),
       });
     }

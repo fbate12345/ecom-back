@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema(
     isSeller: { type: Boolean, default: false, required: true },
     seller: {
       name: String,
+      url: String,
       logo: String,
       description: String,
       rating: { type: Number, default: 0 },

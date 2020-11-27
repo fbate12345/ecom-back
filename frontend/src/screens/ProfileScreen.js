@@ -12,6 +12,7 @@ export default function ProfileScreen() {
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const [sellerName, setSellerName] = useState('');
+  const [sellerUrl, setSellerUrl] = useState('');
   const [sellerLogo, setSellerLogo] = useState('');
   const [sellerDescription, setSellerDescription] = useState('');
 
@@ -35,6 +36,7 @@ export default function ProfileScreen() {
       setEmail(user.email);
       if (user.isSeller) {
         setSellerName(user.seller.name);
+        setSellerUrl(user.seller.url);
         setSellerLogo(user.seller.logo);
         setSellerDescription(user.seller.description);
       }
@@ -53,6 +55,7 @@ export default function ProfileScreen() {
           email,
           password,
           sellerName,
+          sellerUrl,
           sellerLogo,
           sellerDescription,
         })
@@ -129,6 +132,16 @@ export default function ProfileScreen() {
                     placeholder="Enter seller name"
                     value={sellerName}
                     onChange={(e) => setSellerName(e.target.value)}
+                  ></input>
+                </div>
+                <div>
+                  <label htmlFor="sellerUrl">Url</label>
+                  <input
+                    id="sellerUrl"
+                    type="text"
+                    placeholder="Enter seller url"
+                    value={sellerUrl}
+                    onChange={(e) => setSellerUrl(e.target.value)}
                   ></input>
                 </div>
                 <div>

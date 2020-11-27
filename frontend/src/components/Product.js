@@ -19,7 +19,11 @@ export default function Product(props) {
         ></Rating>
         <div className="row">
           <div className="price">${product.price}</div>
-          <div>{product.seller.seller.name}</div>
+          <div>
+            <Link to={`/seller/${product.seller.seller.url}`}>
+              {product.seller.seller.name}
+            </Link>
+          </div>
         </div>
       </div>
     </div>

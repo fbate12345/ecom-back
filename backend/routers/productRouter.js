@@ -13,7 +13,7 @@ productRouter.get(
     const sellerFilter = seller ? { seller } : {};
     const products = await Product.find({ ...sellerFilter }).populate(
       'seller',
-      'seller.name seller.logo'
+      'seller.name seller.url seller.logo'
     );
     res.send(products);
   })
@@ -33,7 +33,7 @@ productRouter.get(
   expressAsyncHandler(async (req, res) => {
     const product = await Product.findById(req.params.id).populate(
       'seller',
-      'seller.name seller.logo'
+      'seller.name seller.url seller.logo'
     );
     if (product) {
       res.send(product);

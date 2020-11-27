@@ -49,8 +49,8 @@ $ npm start
 - Enter admin email and password and click signin
 
 ## Features
-  1. Setting forgot Password
-  2. Setting Sellers screen
+  1. Setting forgot Password [Current]
+  2. Setting Sellers screen [Done]
   3. Carousel
   4. google maps
   5. setting stripe payment

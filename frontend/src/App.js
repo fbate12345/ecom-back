@@ -22,6 +22,7 @@ import UserListScreen from './screens/UserListScreen';
 import UserEditScreen from './screens/UserEditScreen';
 import SellerRoute from './components/SellerRoute';
 import SellerScreen from './screens/SellerScreen';
+import ForgetPasswordScreen from './screens/ForgetPasswordScreen';
 
 function App() {
   const cart = useSelector((state) => state.cart);
@@ -118,6 +119,10 @@ function App() {
             exact
           ></Route>
           <Route path="/signin" component={SigninScreen}></Route>
+          <Route
+            path="/forget-password"
+            component={ForgetPasswordScreen}
+          ></Route>
           <Route path="/register" component={RegisterScreen}></Route>
           <Route path="/shipping" component={ShippingAddressScreen}></Route>
           <Route path="/payment" component={PaymentMethodScreen}></Route>

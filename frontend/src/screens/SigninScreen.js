@@ -69,6 +69,13 @@ export default function SigninScreen(props) {
             </Link>
           </div>
         </div>
+        <div>
+          <label />
+          <div>
+            Forget Password?{' '}
+            <Link to={`/forget-password`}>Request reset password</Link>
+          </div>
+        </div>
       </form>
     </div>
   );

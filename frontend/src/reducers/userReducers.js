@@ -7,6 +7,10 @@ import {
   USER_DETAILS_REQUEST,
   USER_DETAILS_RESET,
   USER_DETAILS_SUCCESS,
+  USER_FORGET_PASSWORD_FAIL,
+  USER_FORGET_PASSWORD_REQUEST,
+  USER_FORGET_PASSWORD_RESET,
+  USER_FORGET_PASSWORD_SUCCESS,
   USER_LIST_FAIL,
   USER_LIST_REQUEST,
   USER_LIST_SUCCESS,
@@ -117,6 +121,20 @@ export const userDeleteReducer = (state = {}, action) => {
     case USER_DELETE_FAIL:
       return { loading: false, error: action.payload };
     case USER_DELETE_RESET:
+      return {};
+    default:
+      return state;
+  }
+};
+export const userForgetPasswordReducer = (state = {}, action) => {
+  switch (action.type) {
+    case USER_FORGET_PASSWORD_REQUEST:
+      return { loading: true };
+    case USER_FORGET_PASSWORD_SUCCESS:
+      return { loading: false, success: true };
+    case USER_FORGET_PASSWORD_FAIL:
+      return { loading: false, error: action.payload };
+    case USER_FORGET_PASSWORD_RESET:
       return {};
     default:
       return state;

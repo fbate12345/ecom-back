@@ -1,5 +1,6 @@
 import express from 'express';
 import expressAsyncHandler from 'express-async-handler';
+import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcryptjs';
 import data from '../data.js';
 import User from '../models/userModel.js';
@@ -153,6 +154,23 @@ userRouter.put(
       res.send({ message: 'User Updated', user: updatedUser });
     } else {
       res.status(404).send({ message: 'User Not Found' });
+    }
+  })
+);
+userRouter.put(
+  '/:email/forget-password',
+
+  expressAsyncHandler(async (req, res) => {
+    const user = await User.findOne({ email: req.params.email });
+    if (user) {
+      user.resetToken = uuidv4();
+      const updatedUser = await user.save();
+      // Send an email with the reset token link
+      res.send({ message: 'Reset Token Has Been Set', user: updatedUser });
+    } else {
+      res
+        .status(404)
+        .send({ message: 'A user with this email has not found.' });
     }
   })
 );

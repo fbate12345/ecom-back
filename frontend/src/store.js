@@ -23,6 +23,8 @@ import {
   userForgetPasswordReducer,
   userListReducer,
   userRegisterReducer,
+  userRequestResetPasswordReducer,
+  userResetPasswordReducer,
   userSigninReducer,
   userUpdateProfileReducer,
   userUpdateReducer,
@@ -66,6 +68,8 @@ const reducer = combineReducers({
   userList: userListReducer,
   userDelete: userDeleteReducer,
   userForgetPassword: userForgetPasswordReducer,
+  userRequestResetPassword: userRequestResetPasswordReducer,
+  userResetPassword: userResetPasswordReducer,
 });
 const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(

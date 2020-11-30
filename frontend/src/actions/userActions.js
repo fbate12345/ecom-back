@@ -24,6 +24,12 @@ import {
   USER_FORGET_PASSWORD_REQUEST,
   USER_FORGET_PASSWORD_SUCCESS,
   USER_FORGET_PASSWORD_FAIL,
+  USER_REQUEST_RESET_PASSWORD_REQUEST,
+  USER_REQUEST_RESET_PASSWORD_SUCCESS,
+  USER_REQUEST_RESET_PASSWORD_FAIL,
+  USER_RESET_PASSWORD_REQUEST,
+  USER_RESET_PASSWORD_SUCCESS,
+  USER_RESET_PASSWORD_FAIL,
 } from '../constants/userConstants';
 
 export const register = (name, email, password) => async (dispatch) => {
@@ -184,5 +190,44 @@ export const forgetPassword = (email) => async (dispatch) => {
         ? error.response.data.message
         : error.message;
     dispatch({ type: USER_FORGET_PASSWORD_FAIL, payload: message });
+  }
+};
+
+export const requestResetPassword = (resetToken) => async (dispatch) => {
+  dispatch({ type: USER_REQUEST_RESET_PASSWORD_REQUEST, payload: resetToken });
+  try {
+    const { data } = await Axios.get(
+      `/api/users/request-reset-password/${resetToken}`,
+      {}
+    );
+    dispatch({ type: USER_REQUEST_RESET_PASSWORD_SUCCESS, payload: data.user });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    dispatch({ type: USER_REQUEST_RESET_PASSWORD_FAIL, payload: message });
+  }
+};
+
+export const resetPassword = ({ userId, resetToken, password }) => async (
+  dispatch
+) => {
+  dispatch({
+    type: USER_RESET_PASSWORD_REQUEST,
+    payload: { resetToken, password },
+  });
+  try {
+    const { data } = await Axios.put(`/api/users/${userId}/reset-password`, {
+      resetToken,
+      password,
+    });
+    dispatch({ type: USER_RESET_PASSWORD_SUCCESS, payload: data });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    dispatch({ type: USER_RESET_PASSWORD_FAIL, payload: message });
   }
 };

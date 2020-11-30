@@ -1,4 +1,4 @@
-# Amazona Fancis ECommerce Website
+# Amazona Francis ECommerce Website
 
 ## Run Locally
 

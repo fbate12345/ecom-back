@@ -1,4 +1,5 @@
 import express from 'express';
+import mailgun from 'mailgun-js';
 import expressAsyncHandler from 'express-async-handler';
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcryptjs';
@@ -157,6 +158,7 @@ userRouter.put(
     }
   })
 );
+
 userRouter.put(
   '/:email/forget-password',
 
@@ -165,12 +167,114 @@ userRouter.put(
     if (user) {
       user.resetToken = uuidv4();
       const updatedUser = await user.save();
+      const DOMAIN = process.env.MAILGUN_API_URL;
+      const mg = mailgun({
+        apiKey: process.env.MAILGUN_API_KEY,
+        domain: DOMAIN,
+      });
+      const data = {
+        from: 'Excited User <me@samples.mailgun.org>',
+        to: user.email,
+        subject: 'Request Reset Password',
+        text: `Hello ${user.name} 
+        You requested to reset your password.         
+        Please open this link to reset your password.         
+        http://localhost:3000/reset-password/${user.resetToken} 
+         
+        Regards,  
+        Ecommerce Website
+         `,
+        html: `Hello ${user.name} <br/>
+        You requested to reset your password.
+        <br/>
+        Please open this link to reset your password. 
+        <br/>
+        <a href="http://localhost:3000/reset-password/${user.resetToken} ">http://localhost:3000/reset-password/${user.resetToken} </a>
+        <br />
+        Regards, <br/>
+        Ecommerce Website
+         `,
+      };
+      mg.messages().send(data, function (error, body) {
+        console.log(error);
+        console.log(body);
+      });
       // Send an email with the reset token link
       res.send({ message: 'Reset Token Has Been Set', user: updatedUser });
     } else {
       res
         .status(404)
         .send({ message: 'A user with this email has not found.' });
+    }
+  })
+);
+
+userRouter.get(
+  '/request-reset-password/:id',
+
+  expressAsyncHandler(async (req, res) => {
+    const resetToken = req.params.id;
+    const user = await User.findOne({ resetToken });
+    if (user) {
+      res.send({ message: 'Success', user });
+    } else {
+      res.status(400).send({
+        message:
+          'Reset token is not valid. Please follow forget password again.',
+      });
+    }
+  })
+);
+
+userRouter.put(
+  '/:id/reset-password',
+
+  expressAsyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id);
+    if (user) {
+      if (user.resetToken === req.body.resetToken) {
+        console.log(req.body.password);
+        user.password = bcrypt.hashSync(req.body.password, 8);
+        user.resetToken = null;
+        await user.save();
+        const DOMAIN = process.env.MAILGUN_API_URL;
+        const mg = mailgun({
+          apiKey: process.env.MAILGUN_API_KEY,
+          domain: DOMAIN,
+        });
+        const data = {
+          from: 'Excited User <me@samples.mailgun.org>',
+          to: user.email,
+          subject: 'Your password has been reset successfully',
+          text: `Hello ${user.name} 
+          Your password has been reset successfully.
+          Regards,  
+          Ecommerce Website
+         `,
+          html: `Hello ${user.name} <br/>
+        Your password has been reset successfully.<br />
+        Regards, <br/>
+        Ecommerce Website
+         `,
+        };
+        mg.messages().send(data, function (error, body) {
+          console.log(error);
+          console.log(body);
+        });
+        res.send({
+          message:
+            'Reset password has been done successfully. Please signin again.',
+        });
+      } else {
+        res.status(400).send({
+          message:
+            'Reset token is not valid. Please follow forget password again.',
+        });
+      }
+    } else {
+      res.status(404).send({
+        message: 'User Not Found',
+      });
     }
   })
 );

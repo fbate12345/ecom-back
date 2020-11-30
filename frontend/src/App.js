@@ -23,6 +23,7 @@ import UserEditScreen from './screens/UserEditScreen';
 import SellerRoute from './components/SellerRoute';
 import SellerScreen from './screens/SellerScreen';
 import ForgetPasswordScreen from './screens/ForgetPasswordScreen';
+import ResetPasswordScreen from './screens/ResetPasswordScreen';
 
 function App() {
   const cart = useSelector((state) => state.cart);
@@ -122,6 +123,10 @@ function App() {
           <Route
             path="/forget-password"
             component={ForgetPasswordScreen}
+          ></Route>
+          <Route
+            path="/reset-password/:id"
+            component={ResetPasswordScreen}
           ></Route>
           <Route path="/register" component={RegisterScreen}></Route>
           <Route path="/shipping" component={ShippingAddressScreen}></Route>

@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { requestResetPassword, resetPassword } from '../actions/userActions';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 
 export default function ResetPasswordScreen(props) {
   const dispatch = useDispatch();
   const resetToken = props.match.params.id;
-  const userRequestResetPassword = {};
-  const { loading, error } = userRequestResetPassword;
+  const userRequestResetPassword = useSelector(
+    (state) => state.userRequestResetPassword
+  );
+  const { loading, error, user } = userRequestResetPassword;
 
-  const userResetPassword = {};
+  const userResetPassword = useSelector((state) => state.userResetPassword);
   const {
     loading: loadingReset,
     error: errorReset,
-    succes: successReset,
+    success: successReset,
   } = userResetPassword;
 
   const [password, setPassword] = useState('');
@@ -24,12 +27,14 @@ export default function ResetPasswordScreen(props) {
     if (password !== confirmPassword) {
       window.alert('Passwords are not matched');
     } else {
-      dispatch(resetPassword({ password, resetToken }));
+      dispatch(resetPassword({ userId: user._id, password, resetToken }));
     }
   };
   useEffect(() => {
-    dispatch(requestResetPassword(resetToken));
-  }, []);
+    if (!user) {
+      dispatch(requestResetPassword(resetToken));
+    }
+  }, [successReset]);
   return (
     <div>
       <form className="form" onSubmit={submitHandler}>

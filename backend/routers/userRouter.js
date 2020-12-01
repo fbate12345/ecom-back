@@ -209,6 +209,68 @@ userRouter.put(
   })
 );
 
+userRouter.post(
+  '/request-signin',
+  expressAsyncHandler(async (req, res) => {
+    const user = await User.findOne({ email: req.body.email });
+    if (user) {
+      user.signinCode = Math.floor(Math.random() * (999999 - 100000)) + 100000;
+      user.resetToken = null;
+      await user.save();
+      const DOMAIN = process.env.MAILGUN_API_URL;
+      const mg = mailgun({
+        apiKey: process.env.MAILGUN_API_KEY,
+        domain: DOMAIN,
+      });
+      const data = {
+        from: 'Admin <me@samples.mailgun.org>',
+        to: user.email,
+        subject: `${user.signinCode} is your signin code`,
+        text: `Hello ${user.name} 
+        ${user.signinCode} is your signin code
+        Regards,  
+        Ecommerce Website
+       `,
+      };
+      mg.messages().send(data, function (error, body) {
+        console.log(error);
+        console.log(body);
+      });
+      res.send({
+        userId: user._id,
+        message: 'Signin code has been sent to your email.',
+      });
+    }
+    res.status(401).send({ message: 'Invalid email or password' });
+  })
+);
+
+userRouter.post(
+  '/verify-signin',
+  expressAsyncHandler(async (req, res) => {
+    const user = await User.findById(req.body.userId);
+    if (user) {
+      if (user.signinCode === req.body.signinCode) {
+        user.signinCode = null;
+        await user.save();
+        res.send({
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          isAdmin: user.isAdmin,
+          isSeller: user.isSeller,
+          token: generateToken(user),
+        });
+        return;
+      } else {
+        res.status(401).send({ message: 'Invalid Signin Code' });
+      }
+    } else {
+      res.status(404).send({ message: 'User Not Found' });
+    }
+  })
+);
+
 userRouter.get(
   '/request-reset-password/:id',
 
@@ -233,7 +295,6 @@ userRouter.put(
     const user = await User.findById(req.params.id);
     if (user) {
       if (user.resetToken === req.body.resetToken) {
-        console.log(req.body.password);
         user.password = bcrypt.hashSync(req.body.password, 8);
         user.resetToken = null;
         await user.save();

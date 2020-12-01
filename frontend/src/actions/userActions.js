@@ -30,6 +30,12 @@ import {
   USER_RESET_PASSWORD_REQUEST,
   USER_RESET_PASSWORD_SUCCESS,
   USER_RESET_PASSWORD_FAIL,
+  USER_VERIFY_SIGNIN_REQUEST,
+  USER_VERIFY_SIGNIN_SUCCESS,
+  USER_VERIFY_SIGNIN_FAIL,
+  USER_REQUEST_SIGNIN_REQUEST,
+  USER_REQUEST_SIGNIN_SUCCESS,
+  USER_REQUEST_SIGNIN_FAIL,
 } from '../constants/userConstants';
 
 export const register = (name, email, password) => async (dispatch) => {
@@ -190,6 +196,47 @@ export const forgetPassword = (email) => async (dispatch) => {
         ? error.response.data.message
         : error.message;
     dispatch({ type: USER_FORGET_PASSWORD_FAIL, payload: message });
+  }
+};
+
+export const requestSignin = (email, password) => async (dispatch) => {
+  dispatch({ type: USER_REQUEST_SIGNIN_REQUEST, payload: { email, password } });
+  try {
+    const { data } = await Axios.post('/api/users/request-signin', {
+      email,
+      password,
+    });
+    dispatch({ type: USER_REQUEST_SIGNIN_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: USER_REQUEST_SIGNIN_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const verifySignin = ({ userId, signinCode }) => async (dispatch) => {
+  dispatch({
+    type: USER_VERIFY_SIGNIN_REQUEST,
+    payload: { userId, signinCode },
+  });
+  try {
+    const { data } = await Axios.post('/api/users/verify-signin', {
+      userId,
+      signinCode,
+    });
+    dispatch({ type: USER_VERIFY_SIGNIN_SUCCESS, payload: data });
+    dispatch({ type: USER_SIGNIN_SUCCESS, payload: data });
+    localStorage.setItem('userInfo', JSON.stringify(data));
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    dispatch({ type: USER_VERIFY_SIGNIN_FAIL, payload: message });
   }
 };
 

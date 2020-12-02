@@ -30,6 +30,7 @@ import {
   userUpdateProfileReducer,
   userUpdateReducer,
   userSigninVerificationReducer,
+  userAddressMapReducer,
 } from './reducers/userReducers';
 
 const initialState = {
@@ -74,6 +75,7 @@ const reducer = combineReducers({
   userResetPassword: userResetPasswordReducer,
   userSigninRequest: userSigninRequestReducer,
   userSigninVerification: userSigninVerificationReducer,
+  userAddressMap: userAddressMapReducer,
 });
 const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(

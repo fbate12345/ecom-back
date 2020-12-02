@@ -26,6 +26,7 @@ import ForgetPasswordScreen from './screens/ForgetPasswordScreen';
 import ResetPasswordScreen from './screens/ResetPasswordScreen';
 import SigninRequestScreen from './screens/SigninRequestScreen';
 import SigninVerificationScreen from './screens/SigninVerificationScreen';
+import MapScreen from './screens/MapScreen';
 
 function App() {
   const cart = useSelector((state) => state.cart);
@@ -72,7 +73,7 @@ function App() {
                 </ul>
               </div>
             ) : (
-              <Link to="/signin-request">Sign In</Link>
+              <Link to="/signin">Sign In</Link>
             )}
             {userInfo && userInfo.isSeller && (
               <div className="dropdown">
@@ -113,6 +114,7 @@ function App() {
           </div>
         </header>
         <main>
+          <Route path="/map" component={MapScreen}></Route>
           <Route path="/seller/:id" component={SellerScreen}></Route>
           <Route path="/cart/:id?" component={CartScreen}></Route>
           <Route path="/product/:id" component={ProductScreen} exact></Route>

@@ -51,9 +51,8 @@ $ npm start
 ## Features
   1. Setting forgot Password [Done]
   2. Setting Sellers screen [Done]
-  3. 2-Steps Verification [Current]
-  4. Carousel
-  5. google maps
-  6. setting stripe payment
-  7. chat screen
-  8. security?
+  3. 2-Steps Verification [Done]
+  4. google maps
+  5. setting stripe payment
+  6. chat screen
+  7. security?

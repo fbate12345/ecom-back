@@ -27,6 +27,8 @@ import ResetPasswordScreen from './screens/ResetPasswordScreen';
 import SigninRequestScreen from './screens/SigninRequestScreen';
 import SigninVerificationScreen from './screens/SigninVerificationScreen';
 import MapScreen from './screens/MapScreen';
+import ChatScreen from './screens/ChatScreen';
+import ChatBox from './components/ChatBox';
 
 function App() {
   const cart = useSelector((state) => state.cart);
@@ -108,6 +110,9 @@ function App() {
                   <li>
                     <Link to="/userlist">Users</Link>
                   </li>
+                  <li>
+                    <Link to="/chatlist">Support</Link>
+                  </li>
                 </ul>
               </div>
             )}
@@ -152,6 +157,9 @@ function App() {
             component={ProductListScreen}
             exact
           ></SellerRoute>
+          {/* Admin */}
+          <AdminRoute path="/chatlist" component={ChatScreen}></AdminRoute>
+
           <AdminRoute
             path="/productlist"
             component={ProductListScreen}
@@ -168,7 +176,10 @@ function App() {
           ></AdminRoute>
           <Route path="/" component={HomeScreen} exact></Route>
         </main>
-        <footer className="row center">All right reserved</footer>
+        <footer className="row center">
+          {userInfo && !userInfo.isAdmin && <ChatBox userInfo={userInfo} />}
+          All right reserved
+        </footer>
       </div>
     </BrowserRouter>
   );

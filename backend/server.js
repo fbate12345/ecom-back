@@ -1,6 +1,15 @@
 import http from 'http';
 import socketIO from 'socket.io';
 import express from 'express';
+import morgan from 'morgan';
+import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
+import mongoSanitize from 'express-mongo-sanitize';
+import xss from 'xss-clean';
+import hpp from 'hpp';
+
+import cors from 'cors';
+ 
 import path from 'path';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
@@ -21,6 +30,37 @@ mongoose
   .catch((error) => console.log(error.reason));
 
 const app = express();
+
+//1) GLOBAL middlewares
+// Set security HTTP headers
+app.use(helmet());
+
+// Development logging
+if(process.env.NODE_ENV === 'development'){
+  app.use(morgan("dev"));
+}
+const limiter = rateLimit({
+  max: 100,
+  windowMs: 60 * 60 * 1000,
+  message: 'Too many requests from this IP, please try again in 1hr!'
+
+});
+app.use('/api', limiter);
+
+// Body parser, reading data from body into req.body
+app.use(express.json({ limit: "2mb" }));
+
+// Data sanitization against NoSQL query injection
+app.use(mongoSanitize());
+
+//Data sanitization against xss
+app.use(xss());
+
+//Prevent parameter pollution
+app.use(hpp());
+
+app.use(cors());
+
 app.use(bodyParser.json());
 app.use('/api/uploads', uploadRouter);
 app.use('/api/users', userRouter);

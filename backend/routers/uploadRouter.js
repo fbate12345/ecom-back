@@ -24,6 +24,7 @@ const resizeImage = (req, res, next) => {
    .toFormat('jpg')
    .jpg({quality:90})
    .toFile('uploads/');
+   next();
 }
 
 // uploadRouter.post('/', isAuth, upload.single('image'), (req, res) => {
